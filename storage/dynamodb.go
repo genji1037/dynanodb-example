@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -17,11 +16,12 @@ func NewDB() *DB {
 		CredentialsChainVerboseErrors: &t,
 	}
 
-	sess, err := session.NewSession(&cfg)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil
-	}
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+		Profile:           "dynamodb",
+		Config:            cfg,
+	}))
+
 	svc := dynamodb.New(sess)
 	return &DB{svc: svc}
 }
