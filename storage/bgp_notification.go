@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	BGPNotificationTableName = "bgpnotification"
+	BGPNotificationTableName = "bgpnotifications_test"
 	BatchWriteMaxItemNumber  = 25
 )
 

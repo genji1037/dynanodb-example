@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
@@ -10,6 +11,11 @@ type DB struct {
 }
 
 func NewDB() *DB {
-	svc := dynamodb.New(session.New())
+	sess, err := session.NewSession()
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	svc := dynamodb.New(sess)
 	return &DB{svc: svc}
 }
