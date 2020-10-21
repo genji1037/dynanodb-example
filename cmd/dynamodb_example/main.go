@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"github.com/genji1037/dynanodb-example/alg"
 	"github.com/genji1037/dynanodb-example/storage"
@@ -60,9 +61,9 @@ func main() {
 				fmt.Println(result)
 			},
 		}
-		cmdQuery.LocalFlags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
-		cmdQuery.LocalFlags().StringVarP(&nid, "nid", "n", "1234560000", "since timestamp")
-		cmdQuery.LocalFlags().Int64VarP(&limit, "limit", "l", 500, "page size")
+		cmdQuery.Flags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
+		cmdQuery.Flags().StringVarP(&nid, "nid", "n", "1234560000", "since timestamp")
+		cmdQuery.Flags().Int64VarP(&limit, "limit", "l", 500, "page size")
 
 		var cmdPut = &cobra.Command{
 			Use:   "put",
@@ -76,9 +77,9 @@ func main() {
 				})
 			},
 		}
-		cmdPut.LocalFlags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
-		cmdPut.LocalFlags().StringVarP(&nid, "nid", "n", "1234560000", "since timestamp")
-		cmdPut.LocalFlags().StringVarP(&payload, "payload", "p", "0x12345", "message payload")
+		cmdPut.Flags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
+		cmdPut.Flags().StringVarP(&nid, "nid", "n", "1234560000", "since timestamp")
+		cmdPut.Flags().StringVarP(&payload, "payload", "p", "0x12345", "message payload")
 
 		var cmdImport = &cobra.Command{
 			Use:   "import",
@@ -125,7 +126,7 @@ func main() {
 				}
 			},
 		}
-		cmdImport.LocalFlags().StringVarP(&input, "file", "f", "bgpnotification.csv", "input file path")
+		cmdImport.Flags().StringVarP(&input, "file", "f", "bgpnotification.csv", "input file path")
 
 		var cmdMock = &cobra.Command{
 			Use:   "mock",
@@ -174,6 +175,6 @@ func main() {
 		cmdBGP.AddCommand(cmdQuery)
 		cmdBGP.AddCommand(cmdPut)
 	}
-
+	flag.Parse()
 	rootCmd.Execute()
 }

@@ -27,7 +27,7 @@ func (db *DB) CreateBGPNotificationTable() {
 			},
 			{
 				AttributeName: aws.String("id"),
-				AttributeType: aws.String("S"),
+				AttributeType: aws.String("N"),
 			},
 		},
 		KeySchema: []*dynamodb.KeySchemaElement{
