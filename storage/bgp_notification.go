@@ -146,7 +146,7 @@ func (db *DB) PutBGPNotification(notification Notification) {
 				S: aws.String(notification.CnvID),
 			},
 			"id": {
-				S: aws.String(notification.NID),
+				N: aws.String(notification.NID),
 			},
 			"payload": {
 				S: aws.String(notification.Payload),
