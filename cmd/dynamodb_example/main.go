@@ -161,7 +161,6 @@ func main() {
 						return
 					}
 				}
-
 			},
 		}
 		cmdMock.Flags().StringVarP(&output, "output", "o", "bgpnotification.csv", "output file path")
@@ -172,6 +171,8 @@ func main() {
 		cmdBGP.AddCommand(cmdDesc)
 		cmdBGP.AddCommand(cmdImport)
 		cmdBGP.AddCommand(cmdMock)
+		cmdBGP.AddCommand(cmdQuery)
+		cmdBGP.AddCommand(cmdPut)
 	}
 
 	rootCmd.Execute()
