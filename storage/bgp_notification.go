@@ -168,7 +168,11 @@ func (db *DB) queryBGPNotificationsByCnvID(cnvID, nid string, limit int64) strin
 		TableName:              aws.String(BGPNotificationTableName),
 		Limit:                  &limit,
 	}
+	startAt := time.Now()
 	result, err := db.svc.Query(input)
+	cost := time.Now().Sub(startAt)
+	progress.ObserveRead(cost)
+	fmt.Println(cost, progress.P.ReadCount)
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {

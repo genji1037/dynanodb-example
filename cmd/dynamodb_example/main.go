@@ -58,14 +58,34 @@ func main() {
 			Use:   "query",
 			Short: "query table",
 			Run: func(cmd *cobra.Command, args []string) {
-				db := storage.NewDB()
-				result := db.QueryBGPNotificationsByCnvID(cnvID, nid, limit)
-				fmt.Println(result)
+				if num > 1 { // query benchmark
+					db := storage.NewDB()
+					wg := sync.WaitGroup{}
+					wg.Add(num)
+					maxInflight := make(chan struct{}, concurrency)
+					startAt := time.Now()
+					for i := 0; i < num; i++ {
+						maxInflight <- struct{}{}
+						go func() {
+							db.QueryBGPNotificationsByCnvID(cnvID, nid, limit)
+							<-maxInflight
+							wg.Done()
+						}()
+					}
+					progress.P.TimeTotal = time.Now().Sub(startAt)
+					progress.Report()
+				} else { // simple query
+					db := storage.NewDB()
+					result := db.QueryBGPNotificationsByCnvID(cnvID, nid, limit)
+					fmt.Println(result)
+				}
 			},
 		}
-		cmdQuery.Flags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
-		cmdQuery.Flags().StringVarP(&nid, "nid", "n", "7aa30ce0-0eb8-11eb-86a9-a45e60ea5ac3", "since timestamp")
+		cmdQuery.Flags().StringVarP(&cnvID, "cnv_id", "v", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
+		cmdQuery.Flags().StringVarP(&nid, "nid", "s", "7aa30ce0-0eb8-11eb-86a9-a45e60ea5ac3", "since timestamp")
 		cmdQuery.Flags().Int64VarP(&limit, "limit", "l", 500, "page size")
+		cmdQuery.Flags().Int64VarP(&concurrency, "concurrency", "c", 16, "concurrency")
+		cmdQuery.Flags().IntVarP(&num, "num", "n", 1, "times you wants to read")
 
 		var cmdPut = &cobra.Command{
 			Use:   "put",
