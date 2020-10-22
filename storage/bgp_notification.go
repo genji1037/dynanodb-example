@@ -146,7 +146,7 @@ func (db *DB) QueryBGPNotificationsByCnvID(cnvID, nid string, limit int64) strin
 				S: aws.String(cnvID),
 			},
 			":nid": {
-				N: aws.String(nid),
+				S: aws.String(nid),
 			},
 		},
 		KeyConditionExpression: aws.String("conv = :cnv_id AND id > :nid"),
