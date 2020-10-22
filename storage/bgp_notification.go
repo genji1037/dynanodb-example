@@ -167,6 +167,7 @@ func (db *DB) queryBGPNotificationsByCnvID(cnvID, nid string, limit int64) strin
 		ProjectionExpression:   aws.String("id, payload"),
 		TableName:              aws.String(BGPNotificationTableName),
 		Limit:                  &limit,
+		ReturnConsumedCapacity: aws.String("TOTAL"),
 	}
 	startAt := time.Now()
 	result, err := db.svc.Query(input)
