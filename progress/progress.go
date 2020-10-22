@@ -21,7 +21,7 @@ func ObserveWrite(duration time.Duration) {
 
 func Report() {
 	fmt.Println("=====report=====")
-	fmt.Println("tps", P.WriteCount/int64(P.TimeTotal/time.Second))
+	fmt.Println("tps", float64(P.WriteCount)/(float64(P.TimeTotal)/float64(time.Second)))
 	fmt.Println("average write latency", time.Duration(P.WriteTimeTotal/P.WriteCount))
 	fmt.Println("total cost", P.TimeTotal)
 
