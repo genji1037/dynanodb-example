@@ -176,6 +176,14 @@ func main() {
 			},
 		}
 
+		var cmdDel = &cobra.Command{
+			Use: "del",
+			Run: func(cmd *cobra.Command, args []string) {
+				db := storage.NewDB()
+				db.DelBGPNotification()
+			},
+		}
+
 		rootCmd.AddCommand(cmdBGP)
 		cmdBGP.AddCommand(cmdCreate)
 		cmdBGP.AddCommand(cmdDesc)
@@ -184,6 +192,7 @@ func main() {
 		cmdBGP.AddCommand(cmdQuery)
 		cmdBGP.AddCommand(cmdPut)
 		cmdBGP.AddCommand(cmdAlter)
+		cmdBGP.AddCommand(cmdDel)
 	}
 	flag.Parse()
 	rootCmd.Execute()
