@@ -5,6 +5,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/genji1037/dynanodb-example/alg"
+	"github.com/gocql/gocql"
 )
 
 const (
@@ -140,6 +142,16 @@ func (db *DB) DescribeBGPNotificationTable() {
 }
 
 func (db *DB) QueryBGPNotificationsByCnvID(cnvID, nid string, limit int64) string {
+	u := &gocql.UUID{}
+	err := u.UnmarshalText([]byte(nid))
+	if err != nil {
+		return err.Error()
+	}
+	nid = alg.ToSortableTimeUUID(*u)
+	return db.queryBGPNotificationsByCnvID(cnvID, nid, limit)
+}
+
+func (db *DB) queryBGPNotificationsByCnvID(cnvID, nid string, limit int64) string {
 	input := &dynamodb.QueryInput{
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 			":cnv_id": {
@@ -187,7 +199,7 @@ func (db *DB) PutBGPNotification(notification Notification) {
 				S: aws.String(notification.CnvID),
 			},
 			"id": {
-				N: aws.String(notification.NID),
+				N: aws.String(alg.ToSortableTimeUUID(gocql.TimeUUID())),
 			},
 			"payload": {
 				S: aws.String(notification.Payload),

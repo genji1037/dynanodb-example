@@ -62,7 +62,7 @@ func main() {
 			},
 		}
 		cmdQuery.Flags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
-		cmdQuery.Flags().StringVarP(&nid, "nid", "n", "1234560000", "since timestamp")
+		cmdQuery.Flags().StringVarP(&nid, "nid", "n", "7aa30ce0-0eb8-11eb-86a9-a45e60ea5ac3", "since timestamp")
 		cmdQuery.Flags().Int64VarP(&limit, "limit", "l", 500, "page size")
 
 		var cmdPut = &cobra.Command{
@@ -72,13 +72,11 @@ func main() {
 				db := storage.NewDB()
 				db.PutBGPNotification(storage.Notification{
 					CnvID:   cnvID,
-					NID:     nid,
 					Payload: payload,
 				})
 			},
 		}
 		cmdPut.Flags().StringVarP(&cnvID, "cnv_id", "c", "dcdcf72b-ee08-46b9-9567-4b950207bc07", "conversation id")
-		cmdPut.Flags().StringVarP(&nid, "nid", "n", "1234560000", "since timestamp")
 		cmdPut.Flags().StringVarP(&payload, "payload", "p", "0x12345", "message payload")
 
 		var cmdImport = &cobra.Command{
