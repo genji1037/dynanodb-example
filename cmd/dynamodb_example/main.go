@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -115,13 +116,17 @@ func main() {
 				}()
 				db := storage.NewDB()
 				maxInflight := make(chan struct{}, 16)
+				wg := sync.WaitGroup{}
 				for n := range nCh {
 					maxInflight <- struct{}{}
+					wg.Add(1)
 					go func(n storage.Notification) {
 						db.PutBGPNotification(n)
 						<-maxInflight
+						wg.Done()
 					}(n)
 				}
+				wg.Wait()
 			},
 		}
 		cmdImport.Flags().StringVarP(&input, "file", "f", "bgpnotification.csv", "input file path")
