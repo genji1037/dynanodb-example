@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	BGPNotificationTableName = "bgpnotifications_test"
+	BGPNotificationTableName = "bgpnotifications_test_2"
 	BatchWriteMaxItemNumber  = 25
 )
 
@@ -44,7 +44,7 @@ func (db *DB) CreateBGPNotificationTable() {
 			ReadCapacityUnits:  aws.Int64(5),
 			WriteCapacityUnits: aws.Int64(5),
 		},
-		TableName: aws.String(BGPNotificationTableName + "_2"),
+		TableName: aws.String(BGPNotificationTableName),
 	}
 
 	result, err := db.svc.CreateTable(input)
