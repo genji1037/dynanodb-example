@@ -27,7 +27,7 @@ func (db *DB) CreateBGPNotificationTable() {
 			},
 			{
 				AttributeName: aws.String("id"),
-				AttributeType: aws.String("N"),
+				AttributeType: aws.String("S"),
 			},
 		},
 		KeySchema: []*dynamodb.KeySchemaElement{
@@ -44,7 +44,7 @@ func (db *DB) CreateBGPNotificationTable() {
 			ReadCapacityUnits:  aws.Int64(5),
 			WriteCapacityUnits: aws.Int64(5),
 		},
-		TableName: aws.String(BGPNotificationTableName),
+		TableName: aws.String(BGPNotificationTableName + "_2"),
 	}
 
 	result, err := db.svc.CreateTable(input)
