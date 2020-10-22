@@ -28,7 +28,7 @@ func main() {
 	// bgp sub command
 	{
 		var cnvID, nid, payload, input, output string
-		var limit int64
+		var limit, concurrency int64
 		var num int
 
 		var cmdBGP = &cobra.Command{
@@ -116,7 +116,7 @@ func main() {
 					close(nCh)
 				}()
 				db := storage.NewDB()
-				maxInflight := make(chan struct{}, 16)
+				maxInflight := make(chan struct{}, concurrency)
 				wg := sync.WaitGroup{}
 				startAt := time.Now()
 				for n := range nCh {
@@ -134,6 +134,7 @@ func main() {
 			},
 		}
 		cmdImport.Flags().StringVarP(&input, "file", "f", "bgpnotification.csv", "input file path")
+		cmdImport.Flags().Int64VarP(&concurrency, "concurrency", "c", 16, "concurrency")
 
 		var cmdMock = &cobra.Command{
 			Use:   "mock",
