@@ -212,7 +212,7 @@ func (db *DB) PutBGPNotification(notification Notification) {
 	}
 
 	startAt := time.Now()
-	result, err := db.svc.PutItem(input)
+	_, err := db.svc.PutItem(input)
 	progress.ObserveWrite(time.Now().Sub(startAt))
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
@@ -241,8 +241,6 @@ func (db *DB) PutBGPNotification(notification Notification) {
 		}
 		return
 	}
-
-	fmt.Println(result)
 }
 
 func (db *DB) BatchWriteBGPNotification(notifications []Notification) {
