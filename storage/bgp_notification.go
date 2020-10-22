@@ -6,7 +6,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/genji1037/dynanodb-example/alg"
+	"github.com/genji1037/dynanodb-example/progress"
 	"github.com/gocql/gocql"
+	"time"
 )
 
 const (
@@ -209,7 +211,9 @@ func (db *DB) PutBGPNotification(notification Notification) {
 		TableName:              aws.String(BGPNotificationTableName),
 	}
 
+	startAt := time.Now()
 	result, err := db.svc.PutItem(input)
+	progress.ObserveWrite(time.Now().Sub(startAt))
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/genji1037/dynanodb-example/alg"
+	"github.com/genji1037/dynanodb-example/progress"
 	"github.com/genji1037/dynanodb-example/storage"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
@@ -117,6 +118,7 @@ func main() {
 				db := storage.NewDB()
 				maxInflight := make(chan struct{}, 16)
 				wg := sync.WaitGroup{}
+				startAt := time.Now()
 				for n := range nCh {
 					maxInflight <- struct{}{}
 					wg.Add(1)
@@ -127,6 +129,8 @@ func main() {
 					}(n)
 				}
 				wg.Wait()
+				progress.P.TimeTotal = time.Now().Sub(startAt)
+				progress.Report()
 			},
 		}
 		cmdImport.Flags().StringVarP(&input, "file", "f", "bgpnotification.csv", "input file path")
