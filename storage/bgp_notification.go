@@ -83,10 +83,6 @@ func (db *DB) AlterBGPNotification() {
 				AttributeType: aws.String("S"),
 			},
 		},
-		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
-			ReadCapacityUnits:  aws.Int64(5),
-			WriteCapacityUnits: aws.Int64(5),
-		},
 		TableName: aws.String(BGPNotificationTableName),
 	}
 
