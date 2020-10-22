@@ -72,6 +72,7 @@ func main() {
 							wg.Done()
 						}()
 					}
+					wg.Wait()
 					progress.P.TimeTotal = time.Now().Sub(startAt)
 					progress.Report()
 				} else { // simple query
