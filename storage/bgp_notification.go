@@ -213,7 +213,9 @@ func (db *DB) PutBGPNotification(notification Notification) {
 
 	startAt := time.Now()
 	_, err := db.svc.PutItem(input)
-	progress.ObserveWrite(time.Now().Sub(startAt))
+	cost := time.Now().Sub(startAt)
+	progress.ObserveWrite(cost)
+	fmt.Println(cost, progress.P.WriteCount)
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
