@@ -199,7 +199,7 @@ func (db *DB) PutBGPNotification(notification Notification) {
 				S: aws.String(notification.CnvID),
 			},
 			"id": {
-				N: aws.String(alg.ToSortableTimeUUID(gocql.TimeUUID())),
+				S: aws.String(alg.ToSortableTimeUUID(gocql.TimeUUID())),
 			},
 			"payload": {
 				S: aws.String(notification.Payload),
@@ -290,14 +290,14 @@ func (db *DB) BatchWriteBGPNotification(notifications []Notification) {
 		writeRequests[batchIndex] = &dynamodb.WriteRequest{
 			PutRequest: &dynamodb.PutRequest{
 				Item: map[string]*dynamodb.AttributeValue{
-					"AlbumTitle": {
-						S: aws.String("Somewhat Famous"),
+					"conv": {
+						S: aws.String(notifications[i].CnvID),
 					},
-					"Artist": {
-						S: aws.String("No One You Know"),
+					"id": {
+						S: aws.String(alg.ToSortableTimeUUID(gocql.TimeUUID())),
 					},
-					"SongTitle": {
-						S: aws.String("Call Me Today"),
+					"payload": {
+						S: aws.String(notifications[i].Payload),
 					},
 				},
 			},
