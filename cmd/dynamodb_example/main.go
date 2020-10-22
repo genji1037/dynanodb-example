@@ -167,6 +167,15 @@ func main() {
 		cmdMock.Flags().StringVarP(&output, "output", "o", "bgpnotification.csv", "output file path")
 		cmdMock.Flags().IntVarP(&num, "num", "n", 10, "number of record you want to generate")
 
+		var cmdAlter = &cobra.Command{
+			Use:   "alter",
+			Short: "alter table",
+			Run: func(cmd *cobra.Command, args []string) {
+				db := storage.NewDB()
+				db.AlterBGPNotification()
+			},
+		}
+
 		rootCmd.AddCommand(cmdBGP)
 		cmdBGP.AddCommand(cmdCreate)
 		cmdBGP.AddCommand(cmdDesc)
@@ -174,6 +183,7 @@ func main() {
 		cmdBGP.AddCommand(cmdMock)
 		cmdBGP.AddCommand(cmdQuery)
 		cmdBGP.AddCommand(cmdPut)
+		cmdBGP.AddCommand(cmdAlter)
 	}
 	flag.Parse()
 	rootCmd.Execute()

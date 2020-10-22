@@ -71,6 +71,51 @@ func (db *DB) CreateBGPNotificationTable() {
 	fmt.Println(result)
 }
 
+func (db *DB) AlterBGPNotification() {
+	input := &dynamodb.UpdateTableInput{
+		AttributeDefinitions: []*dynamodb.AttributeDefinition{
+			{
+				AttributeName: aws.String("conv"),
+				AttributeType: aws.String("S"),
+			},
+			{
+				AttributeName: aws.String("id"),
+				AttributeType: aws.String("S"),
+			},
+		},
+		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
+			ReadCapacityUnits:  aws.Int64(5),
+			WriteCapacityUnits: aws.Int64(5),
+		},
+		TableName: aws.String(BGPNotificationTableName),
+	}
+
+	result, err := db.svc.UpdateTable(input)
+	if err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			case dynamodb.ErrCodeResourceInUseException:
+				fmt.Println(dynamodb.ErrCodeResourceInUseException, aerr.Error())
+			case dynamodb.ErrCodeResourceNotFoundException:
+				fmt.Println(dynamodb.ErrCodeResourceNotFoundException, aerr.Error())
+			case dynamodb.ErrCodeLimitExceededException:
+				fmt.Println(dynamodb.ErrCodeLimitExceededException, aerr.Error())
+			case dynamodb.ErrCodeInternalServerError:
+				fmt.Println(dynamodb.ErrCodeInternalServerError, aerr.Error())
+			default:
+				fmt.Println(aerr.Error())
+			}
+		} else {
+			// Print the error, cast err to awserr.Error to get the Code and
+			// Message from an error.
+			fmt.Println(err.Error())
+		}
+		return
+	}
+
+	fmt.Println(result)
+}
+
 func (db *DB) DescribeBGPNotificationTable() {
 	input := &dynamodb.DescribeTableInput{
 		TableName: aws.String(BGPNotificationTableName),
