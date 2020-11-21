@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/genji1037/dynanodb-example/alg"
 	"github.com/genji1037/dynanodb-example/progress"
+	"github.com/genji1037/dynanodb-example/tool"
 	"github.com/gocql/gocql"
 	"time"
 )
@@ -171,6 +172,7 @@ func (db *DB) queryBGPNotificationsByCnvID(cnvID, nid string, limit int64) strin
 	}
 	startAt := time.Now()
 	result, err := db.svc.Query(input)
+
 	cost := time.Now().Sub(startAt)
 	progress.ObserveRead(cost)
 	fmt.Println(cost, progress.P.ReadCount)
@@ -195,7 +197,11 @@ func (db *DB) queryBGPNotificationsByCnvID(cnvID, nid string, limit int64) strin
 		}
 		return ""
 	}
-
+	var readSize int
+	for _, item := range result.Items {
+		readSize += alg.RunCount(*item["payload"].S, *item["id"].S)
+	}
+	fmt.Println("read size:", readSize)
 	return result.String()
 }
 
@@ -216,8 +222,10 @@ func (db *DB) PutBGPNotification(notification Notification) {
 		TableName:              aws.String(BGPNotificationTableName),
 	}
 
+	fmt.Println("write size:", alg.RunCount(notification.CnvID, alg.ToSortableTimeUUID(gocql.TimeUUID()), notification.Payload))
+
 	startAt := time.Now()
-	_, err := db.svc.PutItem(input)
+	output, err := db.svc.PutItem(input)
 	cost := time.Now().Sub(startAt)
 	progress.ObserveWrite(cost)
 	fmt.Println(cost, progress.P.WriteCount)
@@ -248,6 +256,9 @@ func (db *DB) PutBGPNotification(notification Notification) {
 		}
 		return
 	}
+	tool.PrintFloatIfNotNil("rcu:", output.ConsumedCapacity.ReadCapacityUnits)
+	tool.PrintFloatIfNotNil("wcu:", output.ConsumedCapacity.WriteCapacityUnits)
+	tool.PrintFloatIfNotNil("cu:", output.ConsumedCapacity.CapacityUnits)
 }
 
 func (db *DB) BatchWriteBGPNotification(notifications []Notification) {
