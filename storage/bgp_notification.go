@@ -13,11 +13,11 @@ import (
 )
 
 const (
-	BGPNotificationTableName = "bgpnotifications_test"
+	BGPNotificationTableName = "bgpnotifications"
 	BatchWriteMaxItemNumber  = 25
 )
 
-type Notification struct {
+type BGPNotification struct {
 	CnvID   string
 	NID     string
 	Payload string
@@ -205,7 +205,7 @@ func (db *DB) queryBGPNotificationsByCnvID(cnvID, nid string, limit int64) strin
 	return result.String()
 }
 
-func (db *DB) PutBGPNotification(notification Notification) {
+func (db *DB) PutBGPNotification(notification BGPNotification) {
 	input := &dynamodb.PutItemInput{
 		Item: map[string]*dynamodb.AttributeValue{
 			"conv": {
@@ -261,7 +261,7 @@ func (db *DB) PutBGPNotification(notification Notification) {
 	tool.PrintFloatIfNotNil("cu:", output.ConsumedCapacity.CapacityUnits)
 }
 
-func (db *DB) BatchWriteBGPNotification(notifications []Notification) {
+func (db *DB) BatchWriteBGPNotification(notifications []BGPNotification) {
 	var requestItems map[string][]*dynamodb.WriteRequest
 	var writeRequests []*dynamodb.WriteRequest
 
